@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS video_items(
 pk UUID NOT NULL DEFAULT gen_randon_uuid(),
-/*id SERIAL PRIMARY KEY,*/
 name VARCHAR(100) NOT NULL UNIQUE,
 short_description VARCHAR(256),
 full_description TEXT,
