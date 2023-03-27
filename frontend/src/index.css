@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+.protanopia {
+  filter: brightness(0.7) saturate(0) sepia(0.6) hue-rotate(-45deg);
+}
+.deuteranopia {
+  filter: brightness(0.8) contrast(1.2) saturate(0) sepia(0.6) hue-rotate(35deg);
+}
+.tritanopia {
+  filter: brightness(1.1) contrast(0.9) saturate(2) sepia(0.3) hue-rotate(-20deg);
+}
+.blur, .blur:-webkit-full-screen {
+  filter: blur(5px);
+}
+.filter-menu div:hover{
+  background-color: grey;
+  cursor: pointer;
+}
