@@ -1,0 +1,1 @@
+This storage is for playlists for HLS (HTTP Live Streaming)

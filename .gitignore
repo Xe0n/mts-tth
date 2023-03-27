@@ -1,0 +1,4 @@
+backend/video_storage_server/storage/videos/hls/*/
+backend/video_storage_server/storage/videos/src_videos/*
+!backend/video_storage_server/storage/videos/hls/README.md
+!backend/video_storage_server/storage/videos/src_videos/README.md
