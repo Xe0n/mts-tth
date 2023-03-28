@@ -4,6 +4,7 @@ name VARCHAR(100) NOT NULL UNIQUE,
 short_description VARCHAR(256),
 full_description TEXT,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+converted_to_hls BOOLEAN DEFAULT false,
 safe_version BOOLEAN NOT NULL DEFAULT false,
 CONSTRAINT pk_video_items PRIMARY KEY (pk)
 );
