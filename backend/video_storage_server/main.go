@@ -25,10 +25,20 @@ func main() {
 	router := gin.Default()
 	r := router.Group("/api/v1")
 	r.Use(middlewares.CORSMiddleware())
+	r.Use(DBMiddleware(database))
+
 	r.StaticFS("/videos/", http.Dir("storage/videos/hls/"))
+	r.StaticFS("/safe/videos/", http.Dir("storage/videos/hls/safe"))
 
 	r.POST("/upload", controllers.UploadOneFile)
+	r.POST("/safe/upload", controllers.UploadOneSafeFile)
 
-	r.POST("/mkdirtest", controllers.MkDirTest)
 	router.Run() // listen and serve on 0.0.0.0:8080
+}
+
+func DBMiddleware(db db.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Set("dbConn", db)
+		c.Next()
+	}
 }

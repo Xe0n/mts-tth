@@ -6,5 +6,6 @@ full_description TEXT,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 converted_to_hls BOOLEAN DEFAULT false,
 safe_version BOOLEAN NOT NULL DEFAULT false,
+safe_converted_to_hls BOOLEAN DEFAULT false,
 CONSTRAINT pk_video_items PRIMARY KEY (pk)
 );
