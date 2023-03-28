@@ -4,3 +4,4 @@ backend/video_storage_server/storage/videos/src_videos/*
 !backend/video_storage_server/storage/videos/src_videos/README.md
 
 backend/video_storage_server/.env
+backend/video_storage_server/test_ffmpeg_hls/
