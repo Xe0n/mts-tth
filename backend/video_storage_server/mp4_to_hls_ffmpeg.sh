@@ -1,5 +1,6 @@
 #!/bin/bash
-ffmpeg -i storage/videos/src_videos/baks_is_unhappy.mp4 \
+mkdir $2
+ffmpeg -i $1 \
 -filter_complex \
 "[0:v]split=3[v1][v2][v3]; \
 [v1]copy[v1out]; [v2]scale=w=1280:h=720[v2out]; [v3]scale=w=640:h=360[v3out]" \
@@ -14,6 +15,6 @@ ffmpeg -i storage/videos/src_videos/baks_is_unhappy.mp4 \
 -hls_playlist_type vod \
 -hls_flags independent_segments \
 -hls_segment_type mpegts \
--hls_segment_filename test_ffmpeg_hls/stream_%v/data%02d.ts \
--master_pl_name test_ffmpeg_hls/master.m3u8 \
--var_stream_map "v:0,a:0 v:1,a:1 v:2,a:2" test_ffmpeg_hls/stream_%v.m3u8
+-hls_segment_filename $2/stream_%v/data%04d.ts \
+-master_pl_name master.m3u8 \
+-var_stream_map "v:0,a:0 v:1,a:1 v:2,a:2" $2/stream_%v/stream.m3u8
