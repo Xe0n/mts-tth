@@ -28,5 +28,7 @@ func main() {
 	r.StaticFS("/videos/", http.Dir("storage/videos/hls/"))
 
 	r.POST("/upload", controllers.UploadOneFile)
+
+	r.POST("/mkdirtest", controllers.MkDirTest)
 	router.Run() // listen and serve on 0.0.0.0:8080
 }

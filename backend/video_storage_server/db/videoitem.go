@@ -20,6 +20,7 @@ func (db Database) GetAllVideoItems() (*models.VideoItemList, error) {
 			&videoItem.ShortDescription,
 			&videoItem.FullDescription,
 			&videoItem.CreatedAt,
+			&videoItem.ConvertedToHls,
 			&videoItem.SafeVersion,
 		)
 		if err != nil {
@@ -44,6 +45,7 @@ func (db Database) GetFirstNVideoItems(numberOfRows int) (*models.VideoItemList,
 			&videoItem.ShortDescription,
 			&videoItem.FullDescription,
 			&videoItem.CreatedAt,
+			&videoItem.ConvertedToHls,
 			&videoItem.SafeVersion,
 		)
 		if err != nil {
@@ -58,11 +60,13 @@ func (db Database) AddVideoItem(videoItem *models.VideoItem) error {
 	var id string
 	var createdAt string
 	var safeVersion bool
-	query := `INSERT INTO video_items (name, short_description, full_description) VALUES ($1, $2, $3) RETURNING id, created_at, safe_version`
+	query := `INSERT INTO video_items (name, short_description, full_description, converted_to_hls) VALUES ($1, $2, $3, $4) RETURNING id, created_at, safe_version`
 	err := db.Conn.QueryRow(
-		query, videoItem.Name,
+		query,
+		videoItem.Name,
 		videoItem.ShortDescription,
 		videoItem.FullDescription,
+		videoItem.ConvertedToHls,
 	).Scan(&id, &createdAt, &safeVersion)
 	if err != nil {
 		return err
@@ -82,6 +86,7 @@ func (db Database) GetVideoItemById(videoItemId string) (models.VideoItem, error
 		&videoItem.ShortDescription,
 		&videoItem.FullDescription,
 		&videoItem.CreatedAt,
+		&videoItem.ConvertedToHls,
 		&videoItem.SafeVersion,
 	); err {
 	case sql.ErrNoRows:
@@ -104,12 +109,13 @@ func (db Database) DeleteVideoItem(videoItemId string) error {
 
 func (db Database) UpdateVideoItem(videoItemId string, videoItemData models.VideoItem) (models.VideoItem, error) {
 	videoItem := models.VideoItem{}
-	query := `UPDATE video_items SET name=$1, short_description=$2, full_description=$3, safe_version=$4 WHERE id=$5 RETURNING id, name, short_description, full_description, created_at, safe_version;`
+	query := `UPDATE video_items SET name=$1, short_description=$2, full_description=$3, converted_to_hls=$4 safe_version=$5 WHERE id=$6 RETURNING id, name, short_description, full_description, created_at, safe_version;`
 	err := db.Conn.QueryRow(
 		query,
 		videoItemData.Name,
 		videoItemData.ShortDescription,
 		videoItemData.FullDescription,
+		videoItemData.ConvertedToHls,
 		videoItemData.SafeVersion,
 		videoItemId,
 	).Scan(&videoItem.ID,
@@ -140,6 +146,31 @@ func (db Database) UpdateVideoItemSafeVersion(videoItemId string, safeVersion bo
 		&videoItem.ShortDescription,
 		&videoItem.FullDescription,
 		&videoItem.CreatedAt,
+		&videoItem.ConvertedToHls,
+		&videoItem.SafeVersion,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return videoItem, ErrNoMatch
+		}
+		return videoItem, err
+	}
+	return videoItem, nil
+}
+
+func (db Database) UpdateVideoItemConvertedToHls(videoItemId string, convertedToHls bool) (models.VideoItem, error) {
+	videoItem := models.VideoItem{}
+	query := `UPDATE video_items SET converted_to_hls=$1 WHERE id=$2 RETURNING id, name, short_description, full_description, created_at, safe_version;`
+	err := db.Conn.QueryRow(
+		query,
+		convertedToHls,
+		videoItemId,
+	).Scan(&videoItem.ID,
+		&videoItem.Name,
+		&videoItem.ShortDescription,
+		&videoItem.FullDescription,
+		&videoItem.CreatedAt,
+		&videoItem.ConvertedToHls,
 		&videoItem.SafeVersion,
 	)
 	if err != nil {

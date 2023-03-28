@@ -6,6 +6,7 @@ type VideoItem struct {
 	ShortDescription string `json:"short_description"`
 	FullDescription  string `json:"full_description"`
 	CreatedAt        string `json:"created_at"`
+	ConvertedToHls   string `json:"converted_to_hls"`
 	SafeVersion      bool   `json:"safe_version"`
 }
 
