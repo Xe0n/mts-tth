@@ -11,8 +11,10 @@ import (
 	"github.com/yud-warrior/video-storage-server/controllers"
 	"github.com/yud-warrior/video-storage-server/db"
 	"github.com/yud-warrior/video-storage-server/docs"
-	"github.com/yud-warrior/video-storage-server/middlewares"
+
+	_ "github.com/yud-warrior/video-storage-server/docs"
 	//"./docs"
+	"github.com/yud-warrior/video-storage-server/middlewares"
 )
 
 //	@title			Video Storage Server API
@@ -46,6 +48,7 @@ func main() {
 	defer database.Conn.Close()
 
 	router := gin.Default()
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r := router.Group("/api/v1")
 	r.Use(middlewares.CORSMiddleware())
 	r.Use(DBMiddleware(database))
@@ -59,8 +62,6 @@ func main() {
 	r.GET("/videolist/all", controllers.GetAllVideoItems)
 	r.GET("/videolist/lastn", controllers.GetLastNVideoItems)
 	r.GET("/playlist", controllers.GetStreamPlaylistById)
-
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.Run() // listen and serve on 0.0.0.0:8080
 }

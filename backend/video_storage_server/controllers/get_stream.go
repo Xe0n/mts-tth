@@ -25,7 +25,12 @@ type StreamResponseEmpty struct {
 	Message string `json:"error"`
 }
 
+type StreamResponseError struct {
+	Error string `json:"error"`
+}
+
 // GetStreamPlaylistById godoc
+//
 //	@Summary		Represents urls for possible .m3u8 playlist for the video
 //	@Description	get url by pk (uuid)
 //	@Tags			playlists
@@ -36,15 +41,14 @@ type StreamResponseEmpty struct {
 //	@Success		200	{object}	StreamResponseUnsafe
 //	@Success		200	{object}	StreamResponseSafe
 //	@Success		204	{object}	StreamResponseEmpty
-//	@Failure		404	{object}	httputil.HTTPError
+//	@Failure		404	{object}    StreamResponseError
 //	@Router			/playlist [get]
-
 func GetStreamPlaylistById(c *gin.Context) {
 	database := c.MustGet("dbConn").(db.Database)
 	id := c.Query("pk")
 	videoItem, err := database.GetVideoItemById(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "no video with suh pk"})
+		c.JSON(http.StatusNotFound, StreamResponseError{"no video with suh pk"})
 		return
 	}
 	scheme := "http"

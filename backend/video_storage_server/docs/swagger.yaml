@@ -1,4 +1,73 @@
 basePath: /api/v1
+definitions:
+  controllers.ItemsError:
+    properties:
+      error:
+        type: string
+    type: object
+  controllers.StreamResponse:
+    properties:
+      safe_playlist:
+        type: string
+      unsafe_playlist:
+        type: string
+    type: object
+  controllers.StreamResponseEmpty:
+    properties:
+      error:
+        type: string
+    type: object
+  controllers.StreamResponseError:
+    properties:
+      error:
+        type: string
+    type: object
+  controllers.StreamResponseSafe:
+    properties:
+      safe_playlist:
+        type: string
+    type: object
+  controllers.StreamResponseUnsafe:
+    properties:
+      unsafe_playlist:
+        type: string
+    type: object
+  controllers.SuccessfulUpload:
+    properties:
+      ok:
+        type: string
+    type: object
+  controllers.UploadFileError:
+    properties:
+      error:
+        type: string
+    type: object
+  models.VideoItem:
+    properties:
+      converted_to_hls:
+        type: boolean
+      created_at:
+        type: string
+      full_description:
+        type: string
+      name:
+        type: string
+      pk:
+        type: string
+      safe_converted_to_hls:
+        type: boolean
+      safe_version:
+        type: boolean
+      short_description:
+        type: string
+    type: object
+  models.VideoItemList:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/models.VideoItem'
+        type: array
+    type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
@@ -13,5 +82,149 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Video Storage Server API
   version: "1.0"
-paths: {}
+paths:
+  /playlist:
+    get:
+      consumes:
+      - application/json
+      description: get url by pk (uuid)
+      parameters:
+      - description: VideoItem Id
+        in: query
+        name: pk
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.StreamResponseSafe'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/controllers.StreamResponseEmpty'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.StreamResponseError'
+      summary: Represents urls for possible .m3u8 playlist for the video
+      tags:
+      - playlists
+  /safe/upload:
+    post:
+      consumes:
+      - application/json
+      description: Uploading safe video file on the server
+      parameters:
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Name of the video
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Short description of the video
+        in: query
+        name: short_description
+        required: true
+        type: string
+      - description: Full description of the video
+        in: query
+        name: full_description
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.SuccessfulUpload'
+        "208":
+          description: Already Reported
+          schema:
+            $ref: '#/definitions/controllers.SuccessfulUpload'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.UploadFileError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.UploadFileError'
+      summary: Uploading safe file
+      tags:
+      - upload
+  /upload:
+    post:
+      consumes:
+      - application/json
+      description: Uploading unsafe video file on the server
+      parameters:
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Name of the video
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Short description of the video
+        in: query
+        name: short_description
+        required: true
+        type: string
+      - description: Full description of the video
+        in: query
+        name: full_description
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.SuccessfulUpload'
+        "208":
+          description: Already Reported
+          schema:
+            $ref: '#/definitions/controllers.SuccessfulUpload'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.UploadFileError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.UploadFileError'
+      summary: Uploading unsafe file
+      tags:
+      - upload
+  /videolist:
+    get:
+      consumes:
+      - application/json
+      description: get VideoItemsList of the all items
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.VideoItemList'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ItemsError'
+      summary: All the video items
+      tags:
+      - videolist
 swagger: "2.0"

@@ -22,7 +22,332 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {},
+    "paths": {
+        "/playlist": {
+            "get": {
+                "description": "get url by pk (uuid)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "playlists"
+                ],
+                "summary": "Represents urls for possible .m3u8 playlist for the video",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "VideoItem Id",
+                        "name": "pk",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.StreamResponseSafe"
+                        }
+                    },
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.StreamResponseEmpty"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.StreamResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/safe/upload": {
+            "post": {
+                "description": "Uploading safe video file on the server",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "upload"
+                ],
+                "summary": "Uploading safe file",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "File to upload",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name of the video",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Short description of the video",
+                        "name": "short_description",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Full description of the video",
+                        "name": "full_description",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SuccessfulUpload"
+                        }
+                    },
+                    "208": {
+                        "description": "Already Reported",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SuccessfulUpload"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UploadFileError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UploadFileError"
+                        }
+                    }
+                }
+            }
+        },
+        "/upload": {
+            "post": {
+                "description": "Uploading unsafe video file on the server",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "upload"
+                ],
+                "summary": "Uploading unsafe file",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "File to upload",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name of the video",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Short description of the video",
+                        "name": "short_description",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Full description of the video",
+                        "name": "full_description",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SuccessfulUpload"
+                        }
+                    },
+                    "208": {
+                        "description": "Already Reported",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SuccessfulUpload"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UploadFileError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UploadFileError"
+                        }
+                    }
+                }
+            }
+        },
+        "/videolist": {
+            "get": {
+                "description": "get VideoItemsList of the all items",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "videolist"
+                ],
+                "summary": "All the video items",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.VideoItemList"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ItemsError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controllers.ItemsError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.StreamResponse": {
+            "type": "object",
+            "properties": {
+                "safe_playlist": {
+                    "type": "string"
+                },
+                "unsafe_playlist": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.StreamResponseEmpty": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.StreamResponseError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.StreamResponseSafe": {
+            "type": "object",
+            "properties": {
+                "safe_playlist": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.StreamResponseUnsafe": {
+            "type": "object",
+            "properties": {
+                "unsafe_playlist": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.SuccessfulUpload": {
+            "type": "object",
+            "properties": {
+                "ok": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.UploadFileError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.VideoItem": {
+            "type": "object",
+            "properties": {
+                "converted_to_hls": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "full_description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pk": {
+                    "type": "string"
+                },
+                "safe_converted_to_hls": {
+                    "type": "boolean"
+                },
+                "safe_version": {
+                    "type": "boolean"
+                },
+                "short_description": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.VideoItemList": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.VideoItem"
+                    }
+                }
+            }
+        }
+    },
     "externalDocs": {
         "description": "OpenAPI",
         "url": "https://swagger.io/resources/open-api/"
