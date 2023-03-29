@@ -209,7 +209,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/videolist": {
+        "/videolist/all": {
             "get": {
                 "description": "get VideoItemsList of the all items",
                 "consumes": [
@@ -227,6 +227,50 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.VideoItemList"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ItemsError"
+                        }
+                    }
+                }
+            }
+        },
+        "/videolist/lastn": {
+            "get": {
+                "description": "get VideoItemsList by number_of_videos (int)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "videolist"
+                ],
+                "summary": "Last number_of_videos created Video Items",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Number of last videos to represent",
+                        "name": "number_of_videos",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.VideoItemList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ItemsError"
                         }
                     },
                     "500": {

@@ -24,7 +24,7 @@ type ItemsError struct {
 //	@Success		200	{object}	models.VideoItemList
 //	@Failure		400	{object}    ItemsError
 //	@Failure		500	{object}    ItemsError
-//	@Router			/videolist [get]
+//	@Router			/videolist/lastn [get]
 func GetLastNVideoItems(c *gin.Context) {
 	var videoItems *models.VideoItemList
 	database := c.MustGet("dbConn").(db.Database)
@@ -50,7 +50,7 @@ func GetLastNVideoItems(c *gin.Context) {
 //	@Produce		json
 //	@Success		200	{object}	models.VideoItemList
 //	@Failure		500	{object}    ItemsError
-//	@Router			/videolist [get]
+//	@Router			/videolist/all [get]
 func GetAllVideoItems(c *gin.Context) {
 	var videoItems *models.VideoItemList
 	database := c.MustGet("dbConn").(db.Database)
