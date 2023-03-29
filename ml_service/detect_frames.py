@@ -4,18 +4,76 @@ import matplotlib.pyplot as plt
 
 
 def create_positive_negative_images(difference):
+    """Creates two arrays, positive and negative pixels of difference
+
+    Parameters
+    ----------
+    difference : numpy.ndarray
+        Difference (pixel by pixel) of 2 video frames
+
+    Returns
+    -------
+    numpy.ndarray
+        Difference positive pixels
+    numpy.ndarray
+        Difference negative pixels
+    """
+
     positive_image = np.maximum(difference, 0)
     negative_image = np.minimum(difference, 0)
     return positive_image, negative_image
 
 def generate_histogram(image):
+    """Generates histogram of image
+
+    Parameters
+    ----------
+    image : numpy.ndarray
+        Frame positive or negative pixels
+
+    Returns
+    -------
+    numpy.ndarray
+        Histogram of image
+    """
+
     histogram = cv2.calcHist([image], [0], None, [513], [-256, 256])
     return histogram
 
 def f(x):
+    """Converts image pixels to luminance
+
+    Parameters
+    ----------
+    x : np.float32
+        Frame pixel
+
+    Returns
+    -------
+    np.float32
+        Converted pixel
+    """
+
     return np.round(413.435*pow((0.002745*x + 0.0189623), 2.2))
 
 def scan_histogram(hist, target_sum):
+    """Scans histogram for elements and its multiplied sum
+
+    Parameters
+    ----------
+    hist : numpy.ndarray
+        Image
+    target_sum : int
+        Min pixels
+
+    Returns
+    -------
+    int
+        Computed total elements of histogram
+    int
+        Multiplied sum of pixels
+    """
+
     total_elements = 0
     element_sum = 0
     index = 512
@@ -29,9 +87,43 @@ def scan_histogram(hist, target_sum):
     return total_elements, element_sum
 
 def compute_average(total_elements, element_sum):
+    """Coumputes average brightness variation of image
+
+    Parameters
+    ----------
+    total_elements : int
+        Elements of histogram
+    element_sum : int
+        Multiplied sum of pixels
+
+    Returns
+    -------
+    float
+        Average brightness variation of image
+    """
+
     return element_sum / total_elements
 
 def filter_event_list(local_extremes, video_fps, video_frames, video_length):
+    """Filters event list for dangerous frames
+
+    Parameters
+    ----------
+    local_extremes : array
+        Candidate frames
+    video_fps : int
+        Video frame rate
+    video_frames : int
+        Total count of frames in video
+    video_length : float
+        Video length in seconds
+
+    Returns
+    -------
+    dict
+        Dangerous frames
+    """
+
     warn_dict = {}
     for i in range(2, len(local_extremes)):
         n_frames = local_extremes[i]['frames'] + local_extremes[i - 1]['frames'] + local_extremes[i - 2]['frames']
@@ -50,6 +142,21 @@ def filter_event_list(local_extremes, video_fps, video_frames, video_length):
     return warn_dict
 
 def frames_for_preprocessing(event_list, video_fps):
+    """Makes intervals of dangerous moments
+
+    Parameters
+    ----------
+    event_list : dict
+        Dictionary of dangerous frames
+    video_fps : int
+        Video frame rate
+
+    Returns
+    -------
+    dict
+        Intervals of dangerous moments
+    """
+
     result_dict = {}
 
     event_list_keys = list(event_list.keys())
@@ -74,6 +181,19 @@ def frames_for_preprocessing(event_list, video_fps):
 
 
 def detect_dangerous_frames(video_path):
+    """Analyses video for dangerous flashes
+
+    Parameters
+    ----------
+    video_path : str
+        Path to video
+
+    Returns
+    -------
+    dict
+        Intervals of dangerous moments
+    """
+    
     cap = cv2.VideoCapture(video_path)
 
     _, prev_frame = cap.read()
