@@ -26,12 +26,8 @@ func UploadOneFile(c *gin.Context) {
 	videoItem.Name = c.Query("name")
 	videoItem.ShortDescription = c.Query("short_description")
 	videoItem.FullDescription = c.Query("full_description")
-	log.Println(videoItem.Name)
-	log.Println(videoItem.ShortDescription)
-	log.Println(videoItem.FullDescription)
 
 	videoItemInDb, err := database.GetVideoItemByName(videoItem.Name)
-	log.Println(err)
 	if err != db.ErrNoMatch && err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
 		return
@@ -39,8 +35,6 @@ func UploadOneFile(c *gin.Context) {
 		c.JSON(http.StatusAlreadyReported, gin.H{"error": fmt.Sprintf("'%s' already in db!", videoItemInDb.Name)})
 		return
 	}
-
-	log.Println("checkpoint")
 
 	err = c.SaveUploadedFile(file, "storage/videos/src_videos/"+file.Filename)
 	if err != nil {

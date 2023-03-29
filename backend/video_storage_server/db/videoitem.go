@@ -59,6 +59,32 @@ func (db Database) GetFirstNVideoItems(numberOfRows int) (*models.VideoItemList,
 	return list, nil
 }
 
+func (db Database) GetLastNVideoItems(numberOfRows int) (*models.VideoItemList, error) {
+	list := &models.VideoItemList{}
+	rows, err := db.Conn.Query("SELECT * FROM video_items ORDER BY created_at DESC fetch first $1 rows only", numberOfRows)
+	if err != nil {
+		return list, err
+	}
+	for rows.Next() {
+		var videoItem models.VideoItem
+		err := rows.Scan(
+			&videoItem.ID,
+			&videoItem.Name,
+			&videoItem.ShortDescription,
+			&videoItem.FullDescription,
+			&videoItem.CreatedAt,
+			&videoItem.ConvertedToHls,
+			&videoItem.SafeVersion,
+			&videoItem.SafeConvertedToHls,
+		)
+		if err != nil {
+			return list, err
+		}
+		list.VideoItems = append(list.VideoItems, videoItem)
+	}
+	return list, nil
+}
+
 func (db Database) AddVideoItem(videoItem *models.VideoItem) error {
 	var id string
 	var createdAt string

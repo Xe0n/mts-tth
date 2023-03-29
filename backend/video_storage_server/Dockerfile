@@ -9,6 +9,7 @@ RUN chmod +x /go/src/github.com/yud-warrior/video-storage-server/migrate_up.sh
 RUN chmod +x /go/src/github.com/yud-warrior/video-storage-server/migrate_down.sh
 RUN chmod +x /go/src/github.com/yud-warrior/video-storage-server/migrate_force_1.sh
 RUN chmod +x /go/src/github.com/yud-warrior/video-storage-server/mp4_to_hls_ffmpeg.sh
+RUN chmod +x /go/src/github.com/yud-warrior/video-storage-server/make_migrations.sh
 
 FROM alpine
 RUN apk add --no-cache ca-certificates && update-ca-certificates

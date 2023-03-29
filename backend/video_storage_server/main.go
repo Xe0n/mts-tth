@@ -33,6 +33,9 @@ func main() {
 	r.POST("/upload", controllers.UploadOneFile)
 	r.POST("/safe/upload", controllers.UploadOneSafeFile)
 
+	r.GET("/videolist/all", controllers.GetAllVideoItems)
+	r.GET("/videolist/lastn", controllers.GetLastNVideoItems)
+
 	router.Run() // listen and serve on 0.0.0.0:8080
 }
 
