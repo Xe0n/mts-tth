@@ -66,7 +66,7 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`
   }
 }
-const VideoPlayer = ({url}) => {
+const VideoPlayer = ({url, changeSave}) => {
   const [value, setValue] = React.useState(0)
 
   const handleChange = (event, newValue) => {
@@ -111,9 +111,9 @@ const VideoPlayer = ({url}) => {
     }
   }
 
-  const handleBrightnessChange = (e) => {
-    setFilterMain({ ...filterMain, bright: e.target.value })
-  }
+  // const handleBrightnessChange = (e) => {
+  //   setFilterMain({ ...filterMain, bright: e.target.value })
+  // }
   const onChangeBitrate = (event) => {
     const internalPlayer = playerRef.current?.getInternalPlayer('hls');
     if (internalPlayer) {
@@ -121,7 +121,12 @@ const VideoPlayer = ({url}) => {
         internalPlayer.currentLevel = event.target.value;
     }
 }
-console.log(playerRef.current?.getInternalPlayer('hls').levels)
+  console.log(playerRef.current?.getInternalPlayer('hls'))
+  const [checked, setChecked] = React.useState(true);
+  const handleChangeSw = (event) => {
+    setChecked(event.target.checked);
+    changeSave(event.target.checked)
+  };
   return (
     <div>
       <ReactPlayer
@@ -148,15 +153,8 @@ console.log(playerRef.current?.getInternalPlayer('hls').levels)
         <SettingsIcon /> Настройки доступности
       </Button>
       {/* <CrisisAlertIcon /> */}
-       <FormControlLabel control={<Switch defaultChecked />} label={`Безопасный режим`} style={{marginLeft: '10px', marginTop: '6px'}}/> 
-      Quality:
-      <select onChange={onChangeBitrate}>
-        {playerRef.current?.getInternalPlayer('hls')?.levels.map(
-          (level, id) => <option key={id} value={id}>
-            {level.bitrate}
-          </option>
-        )}
-      </select>
+       <FormControlLabel control={<Switch checked={checked} onChange={handleChangeSw}/>} label={`Безопасный режим`} style={{marginLeft: '10px', marginTop: '6px'}} /> 
+
       <Modal
         open={open}
         onClose={handleClose}

@@ -11,8 +11,16 @@ const darkTheme = createTheme({
 function DataTable({ data }) {
   const columns = [
     { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'info', headerName: 'Info', width: 200 },
+    { field: 'name', headerName: 'Название', width: 200 },
+    { field: 'info', headerName: 'Описание'},
+    { field: 'btn', headerName: 'Смотреть', 
+    cell: row => (
+      <div className='user-info text-truncate ms-1 cell-table'>
+      <span className='d-block fw-bold text-truncate'> 
+          {row.url}
+      </span>
+    </div>
+    ) },
   ];
 
   return (
