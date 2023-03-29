@@ -18,3 +18,4 @@ RUN apk add --no-cache ca-certificates && update-ca-certificates
 COPY --from=builder /go/src/github.com/yud-warrior/video-storage-server/build/video-storage-server /usr/bin/video-storage-server
 EXPOSE 8080 8080
 ENTRYPOINT ["/usr/bin/video-storage-server"]
+VOLUME /video_storage_server_volume
