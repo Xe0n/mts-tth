@@ -35,6 +35,7 @@ func main() {
 
 	r.GET("/videolist/all", controllers.GetAllVideoItems)
 	r.GET("/videolist/lastn", controllers.GetLastNVideoItems)
+	r.GET("/playlist", controllers.GetStreamPlaylistById)
 
 	router.Run() // listen and serve on 0.0.0.0:8080
 }

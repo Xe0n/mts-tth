@@ -1,0 +1,65 @@
+package controllers
+
+import (
+	"fmt"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/yud-warrior/video-storage-server/db"
+)
+
+type StreamResponse struct {
+	UnsafePlaylist string `json:"unsafe_playlist"`
+	SafePlaylist   string `json:"safe_playlist"`
+}
+
+type StreamResponseUnsafe struct {
+	UnsafePlaylist string `json:"unsafe_playlist"`
+}
+
+type StreamResponseSafe struct {
+	SafePlaylist string `json:"safe_playlist"`
+}
+
+type StreamResponseEmpty struct {
+	Error string `json:"error"`
+}
+
+func GetStreamPlaylistById(c *gin.Context) {
+	database := c.MustGet("dbConn").(db.Database)
+	id := c.Query("pk")
+	videoItem, err := database.GetVideoItemById(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "no video with suh pk"})
+		return
+	}
+	scheme := "http"
+	if c.Request.TLS != nil {
+		scheme = "https"
+	}
+	baseUrl := scheme + "://" + c.Request.Host + "/api/v1"
+	playlist := "/" + videoItem.ID + ".m3u8"
+	unsafeUrl := baseUrl + "/videos"
+	safeUrl := baseUrl + "safe/videos"
+	unsafe := ""
+	safe := ""
+	if videoItem.ConvertedToHls {
+		unsafe = unsafeUrl + playlist
+	}
+	if videoItem.SafeConvertedToHls {
+		safe = safeUrl + playlist
+	}
+	if len(unsafe) == 0 && len(safe) == 0 {
+		c.JSON(http.StatusNoContent, StreamResponseEmpty{fmt.Sprintf("there are no plalists for this %v", id)})
+		return
+	}
+	if len(safe) == 0 {
+		c.JSON(http.StatusOK, StreamResponseUnsafe{unsafe})
+		return
+	}
+	if len(unsafe) == 0 {
+		c.JSON(http.StatusOK, StreamResponseSafe{safe})
+		return
+	}
+	c.JSON(http.StatusOK, StreamResponse{unsafe, safe})
+}

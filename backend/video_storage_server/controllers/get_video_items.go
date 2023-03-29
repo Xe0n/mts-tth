@@ -20,11 +20,6 @@ func GetLastNVideoItems(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "server presentation error"})
 		return
 	}
-	//u, err := json.Marshal(videoItems)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error": "server presentation error"})
-	//	return
-	//}
 	c.JSON(http.StatusOK, videoItems)
 }
 
