@@ -80,7 +80,17 @@ function VideoList({ videos }) {
     <>
       <List sx={{ padding: "0px", margin: "0px" }}>
         <p style={{ paddingTop: "0px", marginTop: "0px" }}>
-          Для демонстрации возможностей нашего сервиса мы предобработали два известных видео
+          Для демонстрации возможностей нашего сервиса мы предобработали два известных видео <br/><br/>
+          Демонстрируемые примеры показывают результаты обработки видео по разметке
+          <br/><br/>
+          Для вас работали <br/>
+          <a href="https://t.me/gesitnikov">@gesitnikov</a> <br/>
+          <a href="https://t.me/artrsv">@artrsv</a> <br/>
+          <a href="https://t.me/Kmondzy">@Kmondzy</a> <br/>
+          <a href="https://t.me/yudwarrior">@yudwarrior</a> <br/>
+          <a href="https://t.me/morozz_alexandra">@morozz_alexandra</a> <br/>
+          <br/> <br/>
+          Свяжитесь с нами для демонстрации работы алгоритма на вашем видео. <br/>True Tech Hack - ВЛиД Team
         </p>
         {/* <Button variant="contained" onClick={() => handleOpen()}>
           Добавить видео
