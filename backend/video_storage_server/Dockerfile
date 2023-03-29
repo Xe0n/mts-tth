@@ -5,6 +5,8 @@ RUN go mod download
 COPY . /go/src/github.com/yud-warrior/video-storage-server
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o build/video-storage-server github.com/yud-warrior/video-storage-server
 RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+RUN swag init
 RUN chmod +x /go/src/github.com/yud-warrior/video-storage-server/migrate_up.sh
 RUN chmod +x /go/src/github.com/yud-warrior/video-storage-server/migrate_down.sh
 RUN chmod +x /go/src/github.com/yud-warrior/video-storage-server/migrate_force_1.sh

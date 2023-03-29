@@ -6,12 +6,35 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/yud-warrior/video-storage-server/controllers"
 	"github.com/yud-warrior/video-storage-server/db"
+	"github.com/yud-warrior/video-storage-server/docs"
 	"github.com/yud-warrior/video-storage-server/middlewares"
+	//"./docs"
 )
 
+//	@title			Video Storage Server API
+//	@version		1.0
+//	@description	This is a service for storing and receiving video.
+
+//	@contact.name	API Support
+//	@contact.email	rodionyudenko@gmail.com
+
+//	@license.name	Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
+
+//	@host		localhost:8080
+//	@BasePath	/api/v1
+
+//	@externalDocs.description	OpenAPI
+//	@externalDocs.url			https://swagger.io/resources/open-api/
+
 func main() {
+	// programmatically set swagger info
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+
 	dbUser, dbPassword, dbName :=
 		os.Getenv("POSTGRES_USER"),
 		os.Getenv("POSTGRES_PASSWORD"),
@@ -36,6 +59,8 @@ func main() {
 	r.GET("/videolist/all", controllers.GetAllVideoItems)
 	r.GET("/videolist/lastn", controllers.GetLastNVideoItems)
 	r.GET("/playlist", controllers.GetStreamPlaylistById)
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.Run() // listen and serve on 0.0.0.0:8080
 }
