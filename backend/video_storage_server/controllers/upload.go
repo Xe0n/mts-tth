@@ -14,20 +14,24 @@ import (
 func UploadOneFile(c *gin.Context) {
 	// single file
 	var videoItem models.VideoItem
+	database := c.MustGet("dbConn").(db.Database)
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "request should contain file"})
 		return
 	}
-	database := c.MustGet("dbConn").(db.Database)
 
 	log.Println(file.Filename)
 
 	videoItem.Name = c.Query("name")
 	videoItem.ShortDescription = c.Query("short_description")
 	videoItem.FullDescription = c.Query("full_description")
+	log.Println(videoItem.Name)
+	log.Println(videoItem.ShortDescription)
+	log.Println(videoItem.FullDescription)
 
 	videoItemInDb, err := database.GetVideoItemByName(videoItem.Name)
+	log.Println(err)
 	if err != db.ErrNoMatch && err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
 		return
@@ -36,9 +40,11 @@ func UploadOneFile(c *gin.Context) {
 		return
 	}
 
+	log.Println("checkpoint")
+
 	err = c.SaveUploadedFile(file, "storage/videos/src_videos/"+file.Filename)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "saving file error"})
 		return
 	}
 

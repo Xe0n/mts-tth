@@ -24,7 +24,9 @@ func MakeHlsFromSrc(db db.Database, videoItem models.VideoItem) {
 	srcPath := videoStoragePath + "src_videos/" + videoItem.Name
 	hlsPath := videoStoragePath + "hls/" + videoItem.ID
 
-	if fileFormat == ".mp4" {
+	log.Println(fileFormat)
+
+	if fileFormat == "mp4" {
 		cmd := subprocess.New("./mp4_to_hls_ffmpeg.sh", subprocess.Args(srcPath, hlsPath))
 
 		if err := cmd.Exec(); err != nil {
